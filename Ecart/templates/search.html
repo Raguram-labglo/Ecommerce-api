@@ -1,0 +1,46 @@
+<html>
+
+    <title>Search you want</title>
+    <a href="{% url 'show' %}">[..Home..]</a>
+    <a href="{% url 'cart'%}">[..Cart page..]</a>
+    <a href="{% url 'orders' %}">[..My Orders history..]</a>
+    <a href="{% url 'wish_list' %}">[..Wish list..]</a>
+    <button><a href="{% url 'logout' %}">logout</a></button> 
+
+    <center>
+    <h1>Ecart</h1>
+    <button><a href="{% url 'logout' %}">logout</a></button>    
+    <br>
+<form method="post" action="{% url 'search' %}">
+    {% csrf_token %}  
+    <br>
+    <input type="text" name="need">
+    <button type = "submit">Search</button>
+</form>
+    <br>
+    <br>
+   
+   <table>
+     {% for i in data %}
+  
+    <tr>
+        <th><h1>{{i.name}}</h1></th>
+    </tr>
+    <tr>
+        
+        <td><img src="{{i.image.url}}", width="300px"></td>
+        <td>{{i.name}}
+               <br>{{i.title}}<br>
+               Rs {{i.price}}<br>
+               stocks :{{i.in_stocks}}<br>
+               <form method="post" action="{% url 'add_to_cart' i.id %}">
+                {% csrf_token %}
+                <button type="submit">Add to cart</button></a>
+
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+</center>
+</html>

@@ -1,0 +1,45 @@
+<html>
+    <a href="{% url 'show' %}">[..Home..]</a>
+    <a href="{% url 'cart'%}">[..Cart page..]</a>
+    <a href="{% url 'orders' %}">[..My Orders..]</a>
+    <a href="{% url 'wish_list' %}">[..Wish list..]</a>
+<title>add cart</title>
+<center>
+
+    <body>
+        <a href="{% url 'cart'%}">
+            <p>[Cart page]</p>
+        </a>
+        <form method="post">
+            {% csrf_token %}
+            <h1>MY CART</h1>
+            <table>
+
+
+                <tr>
+                    <th>
+                        <h1>{{i.user}}</h1>
+                    </th>
+                </tr>
+                <tr>
+
+                    <td><img src="{{data.image.url}}" , width="300px"></td>
+                    <td><a href="">{{data.name}}
+                        </a><br>{{data.title}}<br>
+                        Rs {{pricedata.price}}<br>
+
+                        total stocks {{data.in_stock}}<br></td>
+
+                </tr>
+                <tr>
+                    <td>
+                        <h1>{{data.name}} added to {{user}} cart,<br> check cart page<a href="{% url 'cart'%}">[Cart
+                                page]</a></h1>
+                    </td>
+                </tr>
+            </table>
+
+    </body>
+</center>
+
+</html>

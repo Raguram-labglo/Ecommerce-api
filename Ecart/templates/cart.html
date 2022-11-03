@@ -1,0 +1,50 @@
+<html>
+<a href="{% url 'show' %}">[..Home..]</a>
+<a href="{% url 'wish_list' %}">[..Wish list..]</a>
+<title>Cart</title>
+<a href="{% url 'orders' %}">[..My Orders history..]</a>
+<button><a href="{% url 'logout' %}">logout</a></button>
+{% csrf_token %}
+<center>
+
+    <body>
+
+
+        <h1>CART</h1>
+
+        <table>
+
+            {% for i in data %}
+            <tr>
+                <td><img src="{{i.product.image.url}}" , width="300px"></td>
+
+                <td>{{i.product.name}}<br>
+                    {{i.product.title}}<br>
+                    Rs {{i.product.price}}<br>
+                    Quantity : {{i.quantity}}<br>
+                    total stocks {{i.product.in_stock}}<br>
+                    <form method="POST" action="{% url 'update_cart' i.id%}">
+
+                        {% csrf_token %}
+                        <input type="number" value={{i.quantity}} name='quantity' required=True min = 1 max = 20> 
+                        <button type="submit">apply</button>
+
+                    </form>
+                    <form method="POST" action="{% url 'del_cart' i.id%}">
+                    {% csrf_token %}
+                    <button type="submit"> remove item</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="{% url 'create_order' %}">
+            <p>buy</button></p>
+        </a>
+
+        <h1>you total cart amount Rs {{ total_price }}/-</h1>
+
+    </body>
+</center>
+
+</html>

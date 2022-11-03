@@ -1,0 +1,80 @@
+<html>
+    <style>
+        div {
+            padding-left: 60%;
+            flex-direction: row;
+            height: 50px;
+            
+        }
+    </style>
+
+<center>
+    <h1>Ecart</h1>
+</center>
+<div>
+<a href="{% url 'cart'%}" style="text-decoration: none; color : black;"><img src="https://img.lovepik.com/free-png/20210926/lovepik-shopping-cart-icon-png-image_401486831_wh1200.png" width="50px">cart</a>
+<a href="{% url 'orders' %}" style="text-decoration: none; color : black;" ><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSBC2e7bsjdqi3S3sMwyclh8uY_70p4aj_XSjKyHB6CkjYwNv1PjQyvZZnjXAvKnvLrfbg&usqp=CAU" width="50px"> Orders history</a>
+<a href="{% url 'wish_list' %}" style="text-decoration: none; color : black;"><img src="https://static.thenounproject.com/png/3551002-200.png" width="50px">wishlist</a>
+<a href="{% url 'current_order' %}" style="text-decoration: none; color : black;"><img src="https://icons.veryicon.com/png/o/commerce-shopping/b2b-shopping-mall/pending-orders.png" width="50px">Pending order</a>
+<a href="{% url 'logout' %}" style="text-decoration: none; color : black;"><img src="https://cdn.iconscout.com/icon/premium/png-256-thumb/logout-1-110657.png" width="50px">Logout</a>
+<a href="http://127.0.0.1:8000/ecommerce/search/" style="text-decoration: none; color : black;"><img src="https://png.pngitem.com/pimgs/s/678-6789777_transparent-domain-icon-png-search-flat-icon-png.png" width="50px">Search</a>
+
+</div>
+<center>
+    <form method="POST">
+        {% csrf_token %}
+        
+        
+    </form>
+    <table>
+        {% for i in products %}
+        <tr>
+            <br>
+            <th>
+                <h1>{{i.name}}<br></h1>
+            </th>
+        </tr>
+        <tr>
+
+            <td><img src="{{i.image.url}}" , width="300px"></td>
+
+            <td>
+                {{i.name}}
+                <br>{{i.title}}<br>
+                Rs {{i.price}}<br>
+                stocks : {{i.in_stocks}}<br>
+                <form method="post" action="{% url 'add_to_cart' i.id %}">
+                    {% csrf_token %}
+                    <a href="{% url 'add_to_cart' i.id %}"><button>Add to cart</button></a>
+
+                </form>
+            </td>
+            <td>
+                {% if i in alredy %} 
+                <form method="post" action="{% url 'remove_wish' i.id %}">
+                    {% csrf_token %}
+                    <button type="submit"><img
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwkSl0E2nBfChJktuTw_eV52iKo7ebGK-pc9rMbb1jeA3RsDX_pQgeH2v-QoJ-CrfU4FQ&usqp=CAU"
+                        width="20px"></button>
+
+                </form>
+                
+
+            {% else %}
+            <form method="post" action="{% url 'wish' i.id %}">
+                {% csrf_token %}
+                <button type="submit"><img src="https://image.pngaaa.com/267/2267-middle.png" width="20px"></form></button>
+
+            </form>
+            
+            {% endif %}
+            </td>
+
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</center>
+
+</html>

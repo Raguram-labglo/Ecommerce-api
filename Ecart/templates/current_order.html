@@ -1,0 +1,52 @@
+<html>
+    <a href="{% url 'show' %}">[..Home..]</a>
+    <a href="{% url 'cart'%}">[..Cart page..]</a>
+    <a href="{% url 'wish_list' %}">[..Wish list..]</a>
+    <a href="{% url 'orders' %}">[..My Orders history..]</a>
+    <button><a href="{% url 'logout' %}">logout</a></button> 
+<title>orders</title>
+
+<body>
+
+    <center>
+        <h1>My Orders</h1>
+        <table>
+
+
+
+            <tr>
+                {{message}}
+                {% for i in orders %}
+               
+                <td><img src="{{ i.product.image.url}}" , width="300px"></td>
+                <td>
+
+                    <p>
+
+                        Product: {{i.product.name}} <br>
+                        price :{{i.price}}<br>
+                        quantity: {{i.quantity}}<br>
+                        Order status : {{i.status}}<br>
+                        order date : {{detail.order_time}}<br>
+                        <br>
+                        <form method = "POST" action="{% url 'cancel_order' i.id detail.id %}">
+                            {% csrf_token %}
+                        <button type="submit">Cancel order</button>                     
+                        </form>
+                </td>
+
+            </tr>
+            {% endfor %}
+
+        </table>
+        
+        <p>Product price :{{detail.order_price}}</p>
+        
+     
+            
+            <p>Tax : + {{detail.tax_price}}</p>
+            <hr>
+            <h2 style="color: green;">Total final price : {{total}}</h2>
+            
+            <button type="submit"> Continue and pay </button>
+
