@@ -10,6 +10,12 @@
 
 <center>
     <h1>Ecart</h1>
+    <form method="post" action="{% url 'search' %}">
+        {% csrf_token %}  
+        <br>
+        <input type="text" name="need">
+        <button type = "submit">Search</button>
+    </form>
 </center>
 <div>
 <a href="{% url 'cart'%}" style="text-decoration: none; color : black;"><img src="https://img.lovepik.com/free-png/20210926/lovepik-shopping-cart-icon-png-image_401486831_wh1200.png" width="50px">cart</a>
