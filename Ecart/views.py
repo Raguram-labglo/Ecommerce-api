@@ -58,7 +58,8 @@ def Search(request):
         find = request.POST.get('need')
         all = Product.objects.all()
         context['product list'] = all
-        suggetions_qs = Product.objects.filter(Q(title__icontains=find) | Q(name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True))
+        suggetions_qs = Product.objects.filter(Q(title__icontains=find) | Q(
+            name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True))
         context['data'] = suggetions_qs
     return render(request, 'search.html', context)
 
@@ -125,7 +126,8 @@ def Order_details(request):
     context = {'order_product': get_order,  'price': price,
                'tax': tax, 'tax_price': tax_price}
     return render(request, 'order_details.html', context)
- 
+
+
 @login_required(login_url='/ecommerce/')
 def current_order(request):
     get_order = Order.objects.filter(
@@ -205,32 +207,35 @@ def Remove_wish(request, id):
         wish_qs.favourite.remove(product_qs)
     return redirect(Product_list)
 
+
 def product_api(request):
 
     products_qs = list(Product.objects.values())
-    product_js = json.dumps(products_qs, default = str, indent =6)
-    return HttpResponse(product_js, content_type = 'application/json')
+    product_js = json.dumps(products_qs, default=str, indent=6)
+    return HttpResponse(product_js, content_type='application/json')
+
 
 def cart_api(request):
 
     cart_product = list(Cart.objects.values())
     print(cart_product)
-    product_js = json.dumps(cart_product, default = str, indent =6)
-    return HttpResponse(product_js, content_type = 'application/json')
+    product_js = json.dumps(cart_product, default=str, indent=6)
+    return HttpResponse(product_js, content_type='application/json')
+
 
 def search_api(request):
     suggetions_qs = []
     if 'need' in request.POST:
         find = request.POST.get('need')
-        result = Product.objects.filter(Q(title__icontains=find) | Q(name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True)).values()
+        result = Product.objects.filter(Q(title__icontains=find) | Q(
+            name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True)).values()
         for i in result:
             suggetions_qs.append(i)
-    suggetions = json.dumps(suggetions_qs, default = str, indent =6)
-    return HttpResponse(suggetions , content_type = 'application/json') 
+    suggetions = json.dumps(suggetions_qs, default=str, indent=6)
+    return HttpResponse(suggetions, content_type='application/json')
+
 
 def order_api(request):
-    orders_qs =Order.objects.all()
+    orders_qs = Order.objects.all()
     order_js = serializers.serialize('json', orders_qs)
-    return JsonResponse(json.loads(order_js), safe = False)
-
-
+    return JsonResponse(json.loads(order_js), safe=False)
