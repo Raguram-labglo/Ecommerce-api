@@ -3,7 +3,7 @@ from sympy import cancel
 from . import views
 
 urlpatterns = [path('show/', views.Product_list, name = 'show'),
-               path('search/', views.Search, name = 'search'),
+               path('search/', views.search_api, name = 'search'),
                path('', views.Form_in, name = 'login'),
                path('logout/', views.Form_out, name = 'logout'),
                path('add_to_cart/<int:id>', views.add_to_cart, name = 'add_to_cart'),
@@ -19,5 +19,8 @@ urlpatterns = [path('show/', views.Product_list, name = 'show'),
                path('current_order/', views.current_order, name = 'current_order'),
                path('product_api/', views.product_api, name = 'product_api' ),
                path('cart_api/', views.cart_api, name = 'cart_api' ),
-                path('search_api/', views.search_api, name = 'search_api' )
+               
+               path('order_api/', views.order_api, name = 'order_api')
                ]
+
+'''path('search_api/', views.search_api, name = 'search_api' ),'''

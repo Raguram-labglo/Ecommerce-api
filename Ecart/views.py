@@ -208,18 +208,29 @@ def Remove_wish(request, id):
 def product_api(request):
 
     products_qs = list(Product.objects.values())
-    print(products_qs)
     product_js = json.dumps(products_qs, default = str, indent =6)
     return HttpResponse(product_js, content_type = 'application/json')
 
 def cart_api(request):
 
-    products_qs = list(Cart.objects.values())
-    print(products_qs)
-    product_js = json.dumps(products_qs, default = str, indent =6)
+    cart_product = list(Cart.objects.values())
+    print(cart_product)
+    product_js = json.dumps(cart_product, default = str, indent =6)
     return HttpResponse(product_js, content_type = 'application/json')
 
 def search_api(request):
-     find = request.POST.get('need')
-     suggetions_qs = list(Product.objects.filter(Q(title__icontains=find) | Q(name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True)).values())
-     return HttpResponse(suggetions_qs , content_type = 'application/json') 
+    suggetions_qs = []
+    if 'need' in request.POST:
+        find = request.POST.get('need')
+        result = Product.objects.filter(Q(title__icontains=find) | Q(name__icontains=find) | Q(brand__icontains=find) & Q(in_stocks=True)).values()
+        for i in result:
+            suggetions_qs.append(i)
+    suggetions = json.dumps(suggetions_qs, default = str, indent =6)
+    return HttpResponse(suggetions , content_type = 'application/json') 
+
+def order_api(request):
+    orders_qs =Order.objects.all()
+    order_js = serializers.serialize('json', orders_qs)
+    return JsonResponse(json.loads(order_js), safe = False)
+
+
