@@ -47,5 +47,19 @@
             <hr>
             <h2 style="color: green;">Total final price : {{total}}</h2>
             
-            <a href="{% url 'create_order' %}"><button> Continue and pay </button></a>
+            
+
+<form method="post" action="{% url 'create_order' %}">
+    {% csrf_token %}
+<script src="https://checkout.stripe.com/checkout.js " class="stripe-button"
+    data-key="{{ key }}"
+    data-description="Patment Gateway"
+    data-amount="{{total}}"
+    data-currency = "inr"
+    data-locale = "auto">
+</script>
+</form>
+
+    </center>
+
 
