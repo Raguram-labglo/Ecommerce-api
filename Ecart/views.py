@@ -11,6 +11,10 @@ from .models import pending, success, failed
 import json
 from django.core import serializers
 from django.http import JsonResponse, HttpResponse
+import stripe
+from django.conf import settings
+
+
 
 
 def Form_in(request):
@@ -141,30 +145,36 @@ def current_order(request):
         return render(request, 'current_order.html', context)
     get_order.order_price = int(price)
     tax = int(18/100*price)
-    total_price = price + tax
+    total_price = int(price + tax)
+    key = settings.STRIPE_PUBLISHABLE_KEY
+    print(key)
+    return render(request, 'current_order.html', {'detail': get_order,'tax': tax, 'tax_price': tax,  'total': total_price, 'key':key})
 
-    return render(request, 'current_order.html', {'detail': get_order,'tax': tax, 'tax_price': tax,  'total': total_price})
-
-
+stripe.api_key = settings.STRIPE_SECRET_KEY
 @login_required(login_url='/ecommerce/')
 def Create_order(request):
-    orders = Order.objects.create(user=request.user)
+    orders = Order.objects.create(user=request.user, order_status = pending)
     orders.order_items.add(
         *Cart.objects.filter(Q(user=request.user) & Q(is_active=True)))
+    orders.save()
     inactive = Cart.objects.filter(user=request.user)
     inactive.update(is_active=False)
-    orders.save()
+    
     get_order = Order.objects.filter(
-        Q(user=request.user.id) & Q(order_status=1)).last()
-    current_products = get_order.order_items.filter(status=1).all()
+        Q(user=request.user.id) & Q(order_status=pending)).last()
+    current_products = get_order.order_items.filter(status=pending).all()
     price_of_products = current_products.values(
         'price').aggregate(Sum('price'))['price__sum']
     
     get_order.order_price = int(price_of_products)
     tax = int(18/100*price_of_products)
-    get_order.tax_price = tax
+    get_order.tax_price = tax  + int(price_of_products)
+    price = tax  + int(price_of_products)
+    current_products.update(status = success)
     get_order.save()
-    return redirect(current_order)
+   # stripe.PaymentIntent.create(amount= int(price), currency="usd", payment_method_types=["card"])
+   
+    return redirect(Order_details)
 
 
 @login_required(login_url='/ecommerce/')
@@ -181,7 +191,7 @@ def Cancel_order(request, cart_id, order_id):
         return render(request, 'current_order.html', context)
     get_order.order_price = int(price_of_products)
     tax = int(18/100*price_of_products)
-    get_order.tax_price = tax
+    get_order.tax_price = tax + int(price_of_products)
     get_order.save()
     return redirect(Order_details)
 
@@ -245,3 +255,8 @@ def order_api(request):
     orders_qs = Order.objects.all()
     order_js = serializers.serialize('json', orders_qs)
     return JsonResponse(json.loads(order_js), safe=False)
+
+def charge(request):
+    if request.method == 'POST':
+        charge = stripe.Charge.create(amount = 500, currency = 'inr', source = request.POST['stripeToken'])
+    return render(request, 'home.html')

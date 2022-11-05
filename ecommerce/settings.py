@@ -142,3 +142,7 @@ PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
 
 STATIC_URL = '/static/'
+
+STRIPE_PUBLISHABLE_KEY = "pk_test_51M0fZ9SFXV3N6vVsGT2qicAqZ8cA3WVpNwsLwXKI0f3Rm7D84hkBNbpy4HOVTJD0JTJ6kxfmr8j5XLwQyO53K9bi00dcLAm6xX"
+
+STRIPE_SECRET_KEY = "sk_test_51M0fZ9SFXV3N6vVsBpFgZG0vDzSS4CC4ngzB46tllC2DyrFGOIg1l8zKTrQTg7EQLZ94BElp8xaTbqoOWrQplx0Q00eg2SJbnO"

@@ -19,7 +19,7 @@ urlpatterns = [path('show/', views.Product_list, name = 'show'),
                path('current_order/', views.current_order, name = 'current_order'),
                path('product_api/', views.product_api, name = 'product_api' ),
                path('cart_api/', views.cart_api, name = 'cart_api' ),
-               
+               path('home/', views.charge, name = 'home'),
                path('order_api/', views.order_api, name = 'order_api')
                ]
 
