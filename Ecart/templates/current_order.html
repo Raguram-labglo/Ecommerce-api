@@ -16,7 +16,7 @@
 
             <tr>
                 {{message}}
-                {% for i in orders %}
+                {% for i in detail %}
                
                 <td><img src="{{ i.product.image.url}}" , width="300px"></td>
                 <td>
@@ -27,9 +27,8 @@
                         price :{{i.price}}<br>
                         quantity: {{i.quantity}}<br>
                         Order status : {{i.status}}<br>
-                        order date : {{detail.order_time}}<br>
                         <br>
-                        <form method = "POST" action="{% url 'cancel_order' i.id detail.id %}">
+                        <form method = "POST" action="{% url 'del_cart' i.id %}">
                             {% csrf_token %}
                         <button type="submit">Cancel order</button>                     
                         </form>
@@ -44,9 +43,9 @@
         
      
             
-            <p>Tax : + {{detail.tax_price}}</p>
+            <p>Tax : + {{tax}}</p>
             <hr>
             <h2 style="color: green;">Total final price : {{total}}</h2>
             
-            <button type="submit"> Continue and pay </button>
+            <a href="{% url 'create_order' %}"><button> Continue and pay </button></a>
 
