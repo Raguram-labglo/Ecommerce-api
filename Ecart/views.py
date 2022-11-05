@@ -130,24 +130,20 @@ def Order_details(request):
 
 @login_required(login_url='/ecommerce/')
 def current_order(request):
-    get_order = Order.objects.filter(
-        Q(user=request.user.id) & Q(order_status=1)).last()
+    get_order = Cart.objects.filter(Q(user=request.user) & Q(is_active=True))
     if get_order == None:
         context = {'message': 'your have no current orders'}
         return render(request, 'order_details.html', context)
-    current_products = get_order.order_items.filter(status=1).all()
-    price_of_products = current_products.values(
-        'price').aggregate(Sum('price'))['price__sum']
-    if price_of_products == None:
+    total_orders_price = get_order.aggregate(Sum('price'))
+    price = total_orders_price['price__sum']
+    if price == None:
         context = {'message': 'your have no current orders'}
         return render(request, 'current_order.html', context)
-    get_order.order_price = int(price_of_products)
-    tax = int(18/100*price_of_products)
-    get_order.tax_price = tax
-    get_order.save()
-    total_price = price_of_products + tax
+    get_order.order_price = int(price)
+    tax = int(18/100*price)
+    total_price = price + tax
 
-    return render(request, 'current_order.html', {'orders': current_products, 'detail': get_order, 'total': total_price})
+    return render(request, 'current_order.html', {'detail': get_order,'tax': tax, 'tax_price': tax,  'total': total_price})
 
 
 @login_required(login_url='/ecommerce/')
@@ -158,6 +154,16 @@ def Create_order(request):
     inactive = Cart.objects.filter(user=request.user)
     inactive.update(is_active=False)
     orders.save()
+    get_order = Order.objects.filter(
+        Q(user=request.user.id) & Q(order_status=1)).last()
+    current_products = get_order.order_items.filter(status=1).all()
+    price_of_products = current_products.values(
+        'price').aggregate(Sum('price'))['price__sum']
+    
+    get_order.order_price = int(price_of_products)
+    tax = int(18/100*price_of_products)
+    get_order.tax_price = tax
+    get_order.save()
     return redirect(current_order)
 
 
