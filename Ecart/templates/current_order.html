@@ -1,9 +1,9 @@
 <html>
-    <a href="{% url 'show' %}">[..Home..]</a>
-    <a href="{% url 'cart'%}">[..Cart page..]</a>
-    <a href="{% url 'wish_list' %}">[..Wish list..]</a>
-    <a href="{% url 'orders' %}">[..My Orders history..]</a>
-    <button><a href="{% url 'logout' %}">logout</a></button> 
+<a href="{% url 'show' %}">[..Home..]</a>
+<a href="{% url 'cart'%}">[..Cart page..]</a>
+<a href="{% url 'wish_list' %}">[..Wish list..]</a>
+<a href="{% url 'orders' %}">[..My Orders history..]</a>
+<button><a href="{% url 'logout' %}">logout</a></button>
 <title>orders</title>
 
 <body>
@@ -17,7 +17,7 @@
             <tr>
                 {{message}}
                 {% for i in detail %}
-               
+
                 <td><img src="{{ i.product.image.url}}" , width="300px"></td>
                 <td>
 
@@ -28,38 +28,34 @@
                         quantity: {{i.quantity}}<br>
                         Order status : {{i.status}}<br>
                         <br>
-                        <form method = "POST" action="{% url 'del_cart' i.id %}">
-                            {% csrf_token %}
-                        <button type="submit">Cancel order</button>                     
-                        </form>
+                    <form method="POST" action="{% url 'del_cart' i.id %}">
+                        {% csrf_token %}
+                        <button type="submit">Cancel order</button>
+                    </form>
                 </td>
 
             </tr>
             {% endfor %}
 
         </table>
-        
-        <p>Product price :{{detail.order_price}}</p>
-        
-     
-            
-            <p>Tax : + {{tax}}</p>
-            <hr>
-            <h2 style="color: green;">Total final price : {{total}}</h2>
-            
-            
 
-<form method="post" action="{% url 'create_order' %}">
-    {% csrf_token %}
-<script src="https://checkout.stripe.com/checkout.js " class="stripe-button"
-    data-key="{{ key }}"
-    data-description="Patment Gateway"
-    data-amount="{{total}}"
-    data-currency = "inr"
-    data-locale = "auto">
-</script>
-</form>
+        <p>Product price :{{data.order_price}}</p>
+
+
+
+        <p>Tax : + {{tax}}</p>
+        <hr>
+        <h2 style="color: green;">Total final price : {{total}}</h2>
+
+
+
+      <!----/> <form method="post" action="{% url 'create_order' %}">
+            {% csrf_token %}
+            <script src="https://checkout.stripe.com/checkout.js " class="stripe-button" data-key="{{ key }}"
+                data-description="Patment Gateway" data-amount="{{total}}" data-currency="inr">
+                </script>
+        </form>
+        <!---->
+        <button><a href="{% url 'payment' %}">Checkout</a></button>
 
     </center>
-
-

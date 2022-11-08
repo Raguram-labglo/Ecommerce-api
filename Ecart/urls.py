@@ -16,11 +16,15 @@ urlpatterns = [path('show/', views.Product_list, name = 'show'),
                path('wish/<int:id>', views.Wish_list_products, name = 'wish'),
                path('wish_list/', views.Show_wish, name = 'wish_list'),
                path('remove_wish/<int:id>', views.Remove_wish, name = 'remove_wish'),
-               path('current_order/', views.current_order, name = 'current_order'),
                path('product_api/', views.product_api, name = 'product_api' ),
                path('cart_api/', views.cart_api, name = 'cart_api' ),
-               path('home/', views.charge, name = 'home'),
-               path('order_api/', views.order_api, name = 'order_api')
+               path('home/', views.Order_payment, name = 'home'),               
+               path('order_api/', views.order_api, name = 'order_api'),
+               path('Success/', views.Paymentsucess, name = 'Success' ),
+               path('Cancel/', views.Paymentcancel, name = 'Cancel' ),
+               path('payment/', views.Payment, name = 'payment'),
+               path('webhook/', views.webhook, name = 'webhook')
                ]
 
 '''path('search_api/', views.search_api, name = 'search_api' ),'''
+    #           path('current_order/', views.current_order, name = 'current_order'),
