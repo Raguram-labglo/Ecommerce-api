@@ -23,3 +23,4 @@ class Order_list(admin.ModelAdmin):
 admin.site.register(Order, Order_list)
 
 admin.site.register(Wish)
+admin.site.register(Paymets)

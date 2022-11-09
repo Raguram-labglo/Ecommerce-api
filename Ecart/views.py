@@ -15,6 +15,7 @@ from django.conf import settings
 
 
 import stripe
+endpoint_secret = 'whsec_66e4f8db2c43802cc38b65b57f02618cdbf8e0f5c5421491afd321a9fe66a35b'
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 
@@ -321,16 +322,17 @@ def Payment(request):
         prices.append(price.id)
     line_items = []
     for item, price in zip(products, prices):
-        line_items.append({'price': price, 'quantity': item.quantity}),
+        line_items.append({'price': price, 'quantity': item.quantity})
     session = stripe.checkout.Session.create(
         payment_method_types=['card'],
         line_items=line_items,
-
+        metadata = {'order ID' : orders.id},
         mode='payment',
         success_url='http://127.0.0.1:8000/ecommerce/Success/',
         cancel_url='http://127.0.0.1:8000/ecommerce/Cancel/'
     )
-    print('************************************************************',session['id'])
+    Paymets.objects.create(order = orders, transaction_id = session['id'])
+    print('***********************************************************************',session)
     
     return redirect(session.url)
 
@@ -342,16 +344,63 @@ def Paymentsucess(request):
     orders.save()
     current_products = get_order.order_items.filter(status=pending).all()
     current_products.update(status=success)
-      
+          
     return HttpResponse('Success')
 
 def Paymentcancel(request):
     return HttpResponse('Payment failed')
 
+charges = []
+order = []
+pay_status = []
 @csrf_exempt
 def webhook(request):
 
     payload = request.body.decode('utf-8')
-    print(payload)
-    return HttpResponse('True', status = 200)
+    sig_header = request.META['HTTP_STRIPE_SIGNATURE']
+    event = stripe.Webhook.construct_event(payload, sig_header, endpoint_secret)
 
+    if event['type'] == 'charge.succeeded':
+        session = event['data']['object']['id']
+        status = event['data']['object']['outcome']['seller_message']
+        charges.append(session)
+        #pay_status.append(status)
+    
+    if event['type'] == 'checkout.session.completed':
+        order_id  = event['data']['object']['metadata']['order ID']
+        order_status = event['data']['object']['payment_status']
+        pay_status.append(order_status)
+        order.append(order_id)
+        print(order_status)
+    if len(pay_status) == 0:
+            order_obj = Paymets.objects.last()
+            print(order_obj)
+            order_obj.payment_satus = 'failed'
+            order_obj.save()
+    else:
+            order_obj = Paymets.objects.last()
+            order_obj.payment_satus = 'paid'
+            order_obj.save()
+            print(pay_status[0])
+
+  
+    print(charges)
+    print(order)
+   # Paymets.objects.create(order = order_obj, transaction_id = str(charges[0]), payment_satus = str(pay_status[0]))
+    return HttpResponse('True', status = 200)
+    
+
+'''if len(pay_status) == 0:
+            order_obj = Order.objects.get(id = int(order[0]))
+            print(order_obj)
+            order_obj.payment_satus = 'failed'
+            order_obj.save()
+        else:
+            order_obj = Order.objects.get(id = int(order[0])) 
+            order_obj.payment_satus = 'paid'
+            order_obj.save()
+            print(pay_status[0])'''
+
+''' payment_create = Paymets.objects.create(order = order_obj, transaction_id = charges[0])
+    #order_obj = Order.objects.get(id = int(order[0]))
+    payment_create.payment_satus = pay_status[0]'''
