@@ -43,3 +43,8 @@ class Wish(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     favourite = models.ManyToManyField(Product)
     wished = models.BooleanField(default=True)
+
+class Paymets(models.Model):
+    order = models.ForeignKey(Order, on_delete = models.CASCADE)
+    transaction_id = models.CharField(max_length = 200)
+    payment_satus = models.CharField(max_length = 200)
